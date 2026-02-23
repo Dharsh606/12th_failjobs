@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Recruiter Login</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="auth-page">
+    <div class="auth-card">
+      <div class="brand" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <h2 style="margin:0">12failjob.com</h2>
+        <span class="pill">RECRUITER</span>
+      </div>
+
+      <div class="auth-tabs">
+        <button type="button" class="auth-tab active" data-tab="login">Login</button>
+        <button type="button" class="auth-tab" data-tab="register">Register</button>
+      </div>
+
+      <div id="loginPanel" class="auth-panel active">
+        <form id="loginForm">
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" id="loginEmail" required>
+          </div>
+          <div class="form-group">
+            <label>Password</label>
+            <input type="password" id="loginPassword" required>
+          </div>
+          <div class="auth-actions">
+            <button class="btn btn-primary btn-block" type="submit">Login</button>
+          </div>
+        </form>
+      </div>
+
+      <div id="registerPanel" class="auth-panel">
+        <form id="registerForm">
+          <div class="form-group">
+            <label>Name / Company *</label>
+            <input type="text" id="regName" required>
+          </div>
+          <div class="form-group">
+            <label>Email *</label>
+            <input type="email" id="regEmail" required>
+          </div>
+          <div class="form-group">
+            <label>Password *</label>
+            <input type="password" id="regPassword" required minlength="6">
+          </div>
+          <div class="form-group">
+            <label>Confirm Password *</label>
+            <input type="password" id="regConfirm" required>
+          </div>
+          <div class="auth-actions">
+            <button class="btn btn-primary btn-block" type="submit">Register</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <div data-include="footer"></div>
+  <script src="js/partials.js"></script>
+</body>
+</html>

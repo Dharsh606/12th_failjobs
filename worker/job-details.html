@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Job Details - Worker</title>
+  <link rel="stylesheet" href="../styles.css" />
+  <style>
+    .big-btn{padding:14px 16px;font-size:18px;border-radius:12px}
+    .title{font-size:28px;font-weight:900;margin:0}
+    .meta2{font-size:18px;margin:6px 0}
+    .box{padding:16px}
+  </style>
+</head>
+<body>
+  <div data-include="header"></div>
+
+  <main class="page-main">
+    <div style="display:flex;gap:10px;flex-wrap:wrap;">
+      <a href="jobs.html" class="btn big-btn">← <span data-i18n="back">Back</span></a>
+      <a href="../index.html" class="btn btn-primary big-btn" data-i18n="btn_change_lang">Change Language</a>
+    </div>
+
+    <div id="jobBox" class="card box narrow" style="margin-top:12px;"></div>
+
+    <div class="card box narrow" style="margin-top:14px;">
+      <h2 data-i18n="apply_title">Apply (Optional)</h2>
+      <p class="meta" data-i18n="apply_sub">If you can’t read much, just call recruiter using the button above.</p>
+
+      <form id="applyForm">
+        <div class="form-group">
+          <label for="appName" data-i18n="your_name">Your Name</label>
+          <input id="appName" type="text" required placeholder="Name" style="width:100%;padding:14px;font-size:18px;border-radius:12px">
+        </div>
+        <div class="form-group">
+          <label for="appPhone" data-i18n="your_phone">Phone</label>
+          <input id="appPhone" type="text" required placeholder="Phone" style="width:100%;padding:14px;font-size:18px;border-radius:12px">
+        </div>
+        <div class="form-group">
+          <label for="appMsg" data-i18n="message">Message</label>
+          <textarea id="appMsg" placeholder="I need this job" style="width:100%;padding:14px;font-size:18px;border-radius:12px"></textarea>
+        </div>
+        <button class="btn btn-primary big-btn btn-block" id="applyBtn" type="button" data-i18n="apply_btn">Submit Application</button>
+      </form>
+    </div>
+  </main>
+
+  <script src="../js/app.js"></script>
+  <script src="../js/i18n.js"></script>
+  <script src="../js/partials.js"></script>
+  <script>
+    function esc(s){
+      return String(s||"").replace(/[&<>"']/g, m => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;" }[m]));
+    }
+    function getParam(name){
+      return new URLSearchParams(location.search).get(name) || "";
+    }
+    function extractPhone(contact){
+      // Extract digits; if 10+ digits, use last 10 (India)
+      const digits = String(contact||"").replace(/\D/g,"");
+      if (digits.length >= 10) return digits.slice(-10);
+      return "";
+    }
+
+    const jobId = Number(getParam("id"));
+
+    async function loadJob(){
+      const box = document.getElementById("jobBox");
+      box.innerHTML = `<p class="meta">Loading...</p>`;
+
+      if (!jobId){
+        box.innerHTML = `<p class="meta">No job selected.</p>`;
+        return;
+      }
+
+      try{
+        const res = await fetch(API("job_get.php") + `?id=${encodeURIComponent(jobId)}`);
+        const data = await res.json();
+
+        if (!data.ok){
+          box.innerHTML = `<p class="meta">Job not found.</p>`;
+          return;
+        }
+
+        const job = data.job;
+        const phone = extractPhone(job.contact);
+        const callBtn = phone
+          ? `<a class="btn btn-primary big-btn" href="tel:${phone}">📞 Call Recruiter</a>`
+          : (job.contact ? `<div class="meta2"><strong>Contact:</strong> ${esc(job.contact)}</div>` : "");
+
+        box.innerHTML = `
+          <div class="title">${esc(job.title)}</div>
+          <div class="meta2"><strong>${esc(job.company)}</strong> • ${esc(job.location)}</div>
+          <div class="meta2">${esc(job.education || "")} ${job.job_type ? "• " + esc(job.job_type) : ""}</div>
+          ${job.salary ? `<div class="meta2"><strong>Salary:</strong> ${esc(job.salary)}</div>` : ""}
+          ${job.category ? `<div class="meta2"><strong>Category:</strong> ${esc(job.category)}</div>` : ""}
+
+          <hr style="margin:12px 0;">
+
+          <h3 style="margin:0 0 8px;" data-i18n="desc">Description</h3>
+          <p style="font-size:18px;line-height:1.4;margin:0 0 10px;">${esc(job.description)}</p>
+
+          ${job.requirements ? `
+            <h3 style="margin:14px 0 8px;" data-i18n="req">Requirements</h3>
+            <pre style="white-space:pre-wrap;font-size:18px;margin:0;">${esc(job.requirements)}</pre>
+          ` : ""}
+
+          <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap;">
+            ${callBtn}
+            <a class="btn big-btn" href="jobs.html" data-i18n="back_to_jobs">Back to Jobs</a>
+          </div>
+        `;
+      }catch(e){
+        console.error(e);
+        box.innerHTML = `<p class="meta">Server error. Check XAMPP.</p>`;
+      }
+    }
+
+    document.getElementById("applyBtn").addEventListener("click", async function(){
+      const btn = this;
+      btn.disabled = true;
+      btn.textContent = "Submitting...";
+      const payload = {
+        job_id: Number(jobId),
+        applicant_name: document.getElementById("appName").value.trim(),
+        applicant_phone: document.getElementById("appPhone").value.trim(),
+        applicant_email: "",
+        message: document.getElementById("appMsg").value.trim()
+      };
+
+      try{
+        const data = await postJSON("apply_create.php", payload);
+
+        if (!data.ok){
+          alert(data.message || "Failed to apply");
+          btn.disabled = false;
+          btn.textContent = "Submit Application";
+          return;
+        }
+
+        alert(data.duplicate ? "You already applied for this job." : "Applied successfully ✅");
+        document.getElementById("applyForm").reset();
+      }catch(e){
+        alert("Server error. Please try again.");
+      }finally{
+        btn.disabled = false;
+        btn.textContent = "Submit Application";
+      }
+    });
+
+    (async function(){
+      await loadLang();
+      applyI18n();
+      loadJob();
+    })();
+  </script>
+</body>
+</html>

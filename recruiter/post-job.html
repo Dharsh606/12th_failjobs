@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Post Job - Recruiter</title>
+  <link rel="stylesheet" href="../styles.css" />
+</head>
+<body>
+  <div data-include="header"></div>
+
+  <main>
+    <h1 class="section-title">Post a Job</h1>
+    <p class="meta mb-2">Select category properly so workers can find easily.</p>
+
+    <div class="card narrow">
+      <form id="postJobForm">
+
+        <div class="form-group">
+          <label for="category">Category *</label>
+          <select id="category" required>
+            <option value="">Select</option>
+            <option value="Home Maid">Home Maid</option>
+            <option value="Security Guard">Security Guard</option>
+            <option value="Helper">Helper</option>
+            <option value="Warehouse Helper">Warehouse Helper</option>
+            <option value="Delivery">Delivery</option>
+            <option value="Driver">Driver</option>
+            <option value="Cook">Cook</option>
+            <option value="Cleaning">Cleaning</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="jobTitle">Job title *</label>
+          <input type="text" id="jobTitle" required placeholder="e.g. Home Maid - Morning Shift">
+        </div>
+
+        <div class="form-group">
+          <label for="companyName">Recruiter/Company name *</label>
+          <input type="text" id="companyName" required placeholder="Your name or company">
+        </div>
+
+        <div class="form-group">
+          <label for="location">Location *</label>
+          <input type="text" id="location" required placeholder="e.g. Chennai, Velachery">
+        </div>
+
+        <div class="form-group">
+          <label for="education">Education required *</label>
+          <select id="education" required>
+            <option value="">Select</option>
+            <option value="18+">18+ student</option>
+            <option value="12th">12th fail</option>
+            <option value="18+/12th">18+ or 12th fail</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="salary">Salary range</label>
+          <input type="text" id="salary" placeholder="₹10,000 - ₹14,000">
+        </div>
+
+        <div class="form-group">
+          <label for="jobType">Job type *</label>
+          <select id="jobType" required>
+            <option value="Full-time">Full-time</option>
+            <option value="Part-time">Part-time</option>
+            <option value="Contract">Contract</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="description">Job description *</label>
+          <textarea id="description" required placeholder="Work details..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="requirements">Requirements (one per line)</label>
+          <textarea id="requirements" placeholder="Good behavior&#10;Basic experience"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="contact">Contact (phone preferred) *</label>
+          <input type="text" id="contact" required placeholder="e.g. 9876543210">
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block">Post Job</button>
+      </form>
+    </div>
+  </main>
+<script src="../js/app.js"></script>
+<script src="../js/partials.js"></script>
+
+<script>
+(function () {
+  const user = getUser();
+
+  if (!user) {
+    window.location.href = "login.html";
+    return;
+  }
+
+  if (user.role !== "recruiter") {
+    alert("Recruiter access only.");
+    window.location.href = "../index.html";
+    return;
+  }
+
+  document.getElementById("postJobForm")
+    .addEventListener("submit", async function(e){
+      e.preventDefault();
+
+      const payload = {
+        category: document.getElementById("category").value,
+        title: document.getElementById("jobTitle").value.trim(),
+        company: document.getElementById("companyName").value.trim(),
+        location: document.getElementById("location").value.trim(),
+        education: document.getElementById("education").value,
+        salary: document.getElementById("salary").value.trim(),
+        job_type: document.getElementById("jobType").value,
+        description: document.getElementById("description").value.trim(),
+        requirements: document.getElementById("requirements").value.trim(),
+        contact: document.getElementById("contact").value.trim(),
+        created_by: user.id
+      };
+
+      const data = await postJSON("jobs_create.php", payload);
+
+      if(!data.ok){
+        alert(data.message || "Failed to post job");
+        return;
+      }
+
+      alert("Job posted successfully ✅");
+      window.location.href = "dashboard.html";
+    });
+})();
+</script>
+
+  <div data-include="footer"></div>
+</body>
+</html>

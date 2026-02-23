@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Recruiter Dashboard</title>
+  <link rel="stylesheet" href="../styles.css" />
+</head>
+<body>
+  <div data-include="header"></div>
+
+  <main class="page-main">
+    <h1 class="section-title">Recruiter Dashboard</h1>
+    <p class="meta mb-2">Post jobs, manage your posts, and check applications.</p>
+
+    <div class="card" style="padding:16px;">
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <a class="btn btn-primary" href="post-job.html">+ Post a New Job</a>
+        <button class="btn" id="logoutBtn">Logout</button>
+      </div>
+      <p class="meta mt-2" id="who"></p>
+    </div>
+
+    <h2 class="section-title mt-3">My Posted Jobs</h2>
+    <div id="myJobs" class="grid"></div>
+  </main>
+
+  <script src="../js/app.js"></script>
+  <script src="../js/partials.js"></script>
+
+  <script>
+    (function () {
+      const user = getUser();
+
+      if (!user) {
+        window.location.href = "login.html";
+        return;
+      }
+
+      // Normalize legacy roles
+      if (user.role === "employer") {
+        user.role = "recruiter";
+        try { setUser(user); } catch(e){}
+      }
+
+      if (user.role !== "recruiter") {
+        alert("Recruiter access only.");
+        window.location.href = "../index.html";
+        return;
+      }
+
+      document.getElementById("logoutBtn").addEventListener("click", logout);
+      document.getElementById("who").textContent =
+        `Logged in as: ${user.name} (${user.email})`;
+
+      function esc(s){
+        return String(s||"").replace(/[&<>"']/g, m =>
+          ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;" }[m])
+        );
+      }
+
+      function jobCard(job){
+        console.log("=== CREATING JOB CARD ===");
+        console.log("Job object:", job);
+        console.log("Job ID:", job.id);
+        console.log("Job title:", job.title);
+        console.log("Job company:", job.company);
+        console.log("Job location:", job.location);
+        console.log("Job category:", job.category);
+        console.log("Job status:", job.status);
+        console.log("Has status field:", job.hasOwnProperty('status'));
+        
+        const status = job.status || 'active';
+        const statusColor = status === 'expired' ? '#ffc107' : (status === 'closed' ? '#6c757d' : '#28a745');
+        const statusText = status === 'expired' ? 'Expired' : (status === 'closed' ? 'Closed' : 'Active');
+        const hasStatusField = job.hasOwnProperty('status');
+        
+        console.log("Creating job card HTML...");
+        
+        const cardHTML = `
+          <div class="card job-card" style="padding:14px;">
+            <h3 style="margin:0 0 6px;">${esc(job.title)}</h3>
+            <p class="meta">${esc(job.company)} • ${esc(job.location)}</p>
+            ${job.category ? `<p class="meta"><strong>Category:</strong> ${esc(job.category)}</p>` : ""}
+            ${hasStatusField ? `<p class="meta"><strong>Status:</strong> <span style="color:${statusColor};font-weight:bold;">${statusText}</span></p>` : ''}
+            <div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap;">
+              <a class="btn btn-primary" href="applications.html?job_id=${job.id}">
+                View Applications
+              </a>
+              ${status === 'active' ? `
+                <button class="btn" style="background:#ffc107;color:black;border:none;" onclick="updateJobStatus(${job.id}, 'expired')">
+                  ⏰ Expired
+                </button>
+                <button class="btn" style="background:#6c757d;color:white;border:none;" onclick="updateJobStatus(${job.id}, 'closed')">
+                  🔒 Closed
+                </button>
+              ` : ''}
+              ${status !== 'active' ? `
+                <button class="btn" style="background:#28a745;color:white;border:none;" onclick="updateJobStatus(${job.id}, 'active')">
+                  ✅ Active
+                </button>
+              ` : ''}
+              <button class="btn" style="background:#dc3545;color:white;border:none;" onclick="deleteJob(${job.id})">
+                🗑️ Delete
+              </button>
+            </div>
+          </div>
+        `;
+        
+        console.log("Job card HTML created:", cardHTML);
+        return cardHTML;
+      }
+
+      async function loadMyJobs(){
+        console.log("=== LOAD MY JOBS START ===");
+        console.log("API URL being called:", API("jobs_list.php"));
+        console.log("Full API URL:", API("jobs_list.php"));
+        
+        const box = document.getElementById("myJobs");
+        
+        // Show loading immediately
+        box.innerHTML = `<p class="meta">Loading your jobs...</p>`;
+        
+        try{
+          console.log("Fetch initiated, waiting for response...");
+          const res = await fetch(API(`jobs_list.php?created_by=${encodeURIComponent(user.id)}`));
+          // Read as text once; then try to parse JSON for robustness
+          const responseText = await res.text();
+          console.log("Response status:", res.status);
+          console.log("Response headers:", [...res.headers.entries()]);
+          console.log("Raw response text:", responseText);
+          let data;
+          try {
+            data = JSON.parse(responseText);
+          } catch (parseErr) {
+            console.error("Failed to parse JSON:", parseErr);
+            box.innerHTML = `<p class="meta">❌ Server returned invalid JSON. Please check PHP errors.</p>`;
+            return;
+          }
+          console.log("Parsed JSON data:", data);
+          console.log("Data.ok:", data.ok);
+          console.log("Data.jobs length:", data.jobs ? data.jobs.length : 0);
+          console.log("Sample job data:", data.jobs ? data.jobs.slice(0, 2) : 'No jobs');
+
+          if(!data.ok){
+            console.log("API returned not ok - Status:", res.status);
+            box.innerHTML = `<p class="meta">❌ Failed to load jobs. Server error (Status: ${res.status}). Please refresh.</p>`;
+            return;
+          }
+
+          let jobs = (data.jobs || []);
+
+          // Fallback: if server-side filtering returned 0, fetch all and filter client-side
+          if (jobs.length === 0) {
+            console.log("No jobs from server-side filter. Falling back to client-side filter.");
+            const res2 = await fetch(API("jobs_list.php"));
+            const text2 = await res2.text();
+            let data2 = {};
+            try { data2 = JSON.parse(text2); } catch(_) {}
+            if (data2.ok && Array.isArray(data2.jobs)) {
+              jobs = data2.jobs.filter(j => Number(j.created_by) === Number(user.id));
+            }
+          }
+          console.log("Filtered jobs count:", jobs.length);
+          console.log("Filtered jobs:", jobs);
+
+          if(jobs.length === 0){
+            console.log("No jobs found for user:", user.id);
+            box.innerHTML = `<p class="meta">No jobs posted yet. <a href="post-job.html">Post your first job</a></p>`;
+            return;
+          }
+
+          console.log("Rendering jobs to page...");
+          // Render jobs immediately
+          box.innerHTML = jobs.map(jobCard).join("");
+          console.log("Jobs rendered successfully");
+          
+          // Add success message
+          setTimeout(() => {
+            const jobCount = document.querySelectorAll('.job-card').length;
+            console.log("Jobs displayed on page:", jobCount);
+            if (jobCount > 0) {
+              box.insertAdjacentHTML('afterbegin', `<p class="meta" style="color:green;">✅ Successfully loaded ${jobCount} jobs!</p>`);
+            }
+          }, 500);
+          
+        }catch(e){
+          console.error("Load jobs error:", e);
+          console.error("Error details:", e.message, e.stack);
+          box.innerHTML = `<p class="meta">❌ Server error: ${e.message}. Please refresh.</p>`;
+        }
+      }
+
+      // Trigger load on page ready
+      loadMyJobs();
+
+      async function deleteJob(jobId) {
+        console.log("=== DELETE FUNCTION START ===");
+        console.log("Job ID:", jobId);
+        console.log("User ID:", user.id);
+        console.log("User object:", user);
+        
+        if (!confirm("Are you sure you want to delete this job? This action cannot be undone.")) {
+          console.log("Delete cancelled by user");
+          return;
+        }
+
+        try {
+          console.log("Sending delete request...");
+          const payload = {
+            job_id: jobId,
+            recruiter_id: user.id
+          };
+          console.log("Delete payload:", payload);
+          
+          const response = await postJSON("jobs_delete.php", payload);
+          console.log("Delete response:", response);
+
+          if (response.ok) {
+            alert("Job deleted successfully! ✅");
+            loadMyJobs(); // Reload the jobs list
+          } else {
+            console.error("Delete failed:", response);
+            alert(response.message || "Failed to delete job");
+          }
+        } catch (error) {
+          console.error("Delete error:", error);
+          alert("Server error. Please try again.");
+        }
+      }
+
+      async function updateJobStatus(jobId, newStatus) {
+        console.log("=== STATUS UPDATE START ===");
+        console.log("Job ID:", jobId);
+        console.log("New Status:", newStatus);
+        console.log("User ID:", user.id);
+        
+        const statusText = newStatus === 'expired' ? 'expired' : (newStatus === 'closed' ? 'closed' : 'active');
+        
+        if (!confirm(`Are you sure you want to mark this job as ${statusText}?`)) {
+          console.log("Status update cancelled by user");
+          return;
+        }
+
+        try {
+          console.log("Sending status update request...");
+          const payload = {
+            job_id: jobId,
+            recruiter_id: user.id,
+            status: newStatus
+          };
+          console.log("Status payload:", payload);
+          
+          const response = await postJSON("jobs_status.php", payload);
+          console.log("Status response:", response);
+
+          if (response.ok) {
+            alert(`Job marked as ${statusText} successfully! ✅`);
+            loadMyJobs(); // Reload the jobs list
+          } else {
+            console.error("Status update failed:", response);
+            alert(response.message || "Failed to update job status");
+          }
+        } catch (error) {
+          console.error("Status update error:", error);
+          alert("Server error. Please try again.");
+        }
+      }
+
+      // Expose actions for inline onclick handlers
+      window.deleteJob = deleteJob;
+      window.updateJobStatus = updateJobStatus;
+    })();
+  </script>
+
+  <div data-include="footer"></div>
+</body>
+</html>

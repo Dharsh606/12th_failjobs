@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>12thFailJobs</title>
+  <link rel="stylesheet" href="styles.css" />
+
+  <style>
+    /* Removed the transparent body background to allow styles.css to load the image */
+    .wrap{max-width:980px;margin:0 auto;padding:18px}
+    .hero{
+      background: transparent;
+      color:#111827;border-radius:18px;padding:22px;
+      display:flex;gap:16px;align-items:center;flex-wrap:wrap;
+      justify-content: center;
+    }
+    .hero img{
+      width:120px;height:120px;border-radius:14px;background:transparent;padding:8px;
+      object-fit:contain;
+    }
+    .hero h1{margin:0;font-size:64px;font-weight:900;letter-spacing:0.2px;animation:slideInUp 0.8s ease-out}
+    .hero p{margin:6px 0 0;opacity:0.92;font-size:16px;animation:slideInUp 0.8s ease-out 0.2s both}
+    .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    @media(max-width:720px){.grid2{grid-template-columns:1fr}}
+    .bigcard{padding:18px;text-decoration:none;display:block;border-radius:16px}
+    .bigtitle{font-size:24px;font-weight:900;margin:0 0 6px}
+    .tag{display:inline-block;margin-top:10px;padding:6px 10px;border-radius:999px;
+      background:transparent;font-weight:700;font-size:13px}
+    .langcard{padding:16px;border-radius:16px;margin-top:14px}
+  </style>
+</head>
+
+<body>
+  <div data-include="header"></div>
+
+  <div class="wrap">
+
+    <section class="hero">
+      <div>
+        <h1 data-i18n="project_name">12thFailJobs</h1>
+        <p data-i18n="project_tagline">Empowering India's Real Workforce</p>
+      </div>
+    </section>
+
+    <div class="card langcard reveal" style="margin-top:14px;">
+      <label style="font-weight:800;display:block;margin-bottom:8px;" data-i18n="choose_language">Choose Language</label>
+      <select id="langSelect" style="width:100%;padding:12px;font-size:18px;border-radius:12px;">
+        <option value="en">English</option>
+        <option value="hi">हिंदी</option>
+        <option value="ta">தமிழ்</option>
+        <option value="te">తెలుగు</option>
+        <option value="ml">മലയാളം</option>
+        <option value="kn">ಕನ್ನಡ</option>
+        <option value="bn">বাংলা</option>
+        <option value="mr">मराठी</option>
+        <option value="gu">ગુજરાતી</option>
+        <option value="pa">ਪੰਜਾਬੀ</option>
+        <option value="or">ଓଡ଼ିଆ</option>
+        <option value="as">অসমীয়া</option>
+      </select>
+      <p class="meta" style="margin-top:10px;" data-i18n="lang_hint">
+        Language will be saved for all pages.
+      </p>
+    </div>
+
+    <h2 data-i18n="choose_role" style="font-size:22px;margin:16px 0 10px;">Choose Your Section</h2>
+
+    <div class="grid2">
+      <a href="worker/login.html" class="card bigcard">
+        <div class="bigtitle" data-i18n="i_am_worker">I am a Worker</div>
+        <div class="meta" data-i18n="worker_sub">Find nearby jobs easily</div>
+        <span class="tag" data-i18n="worker_tag">Jobs • Call • Simple</span>
+      </a>
+
+      <a href="recruiter/login.html" class="card bigcard">
+        <div class="bigtitle" data-i18n="i_am_recruiter">I am a Recruiter</div>
+        <div class="meta" data-i18n="recruiter_sub">Hire trusted workers fast</div>
+        <span class="tag" data-i18n="recruiter_tag">Post • Manage • Hire</span>
+      </a>
+    </div>
+  </div>
+
+  <div data-include="footer"></div>
+
+  <script src="js/i18n.js"></script>
+  <script src="js/partials.js"></script>
+  <script>
+    (async function(){
+      await loadLangRoot();   // root page loader
+      applyI18n();
+
+      const sel = document.getElementById("langSelect");
+      sel.value = getLang();
+      sel.addEventListener("change", () => setLang(sel.value));
+    })();
+  </script>
+  <script>
+    // Scroll Reveal Animation
+    function reveal() {
+      const reveals = document.querySelectorAll('.reveal');
+      
+      reveals.forEach(element => {
+        const windowHeight = window.innerHeight;
+        const elementTop = element.getBoundingClientRect().top;
+        const elementVisible = 150;
+        
+        if (elementTop < windowHeight - elementVisible) {
+          element.classList.add('active');
+        }
+      });
+    }
+    
+    window.addEventListener('scroll', reveal);
+    reveal(); // Call once on load
+    
+    // Tab switching logic for Login/Register
+    const tabs = document.querySelectorAll('.auth-tab');
+    const panels = document.querySelectorAll('.auth-panel');
+
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        // Remove active class from all tabs and panels
+        tabs.forEach(t => t.classList.remove('active'));
+        panels.forEach(p => p.classList.remove('active'));
+
+        // Add active class to the clicked tab and its matching panel
+        tab.classList.add('active');
+        document.getElementById(tab.dataset.tab + 'Panel').classList.add('active');
+      });
+    });
+  </script>
+</body>
+</html>
