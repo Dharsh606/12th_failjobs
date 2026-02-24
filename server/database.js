@@ -199,6 +199,11 @@ class Database {
     return null;
   }
 
+  // Verify password
+  async verifyPassword(password, hashedPassword) {
+    return await bcrypt.compare(password, hashedPassword);
+  }
+
   // Job operations
   async createJob(jobData) {
     const newJob = {
