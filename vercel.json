@@ -1,22 +1,32 @@
-﻿{
+{
   "version": 2,
   "builds": [
-    {"src": "server/index.js", "use": "@vercel/node"},
-    {"src": "**/*.css", "use": "@vercel/static"},
-    {"src": "**/*.js", "use": "@vercel/static"},
-    {"src": "**/*.html", "use": "@vercel/static"},
-    {"src": "assets/**", "use": "@vercel/static"},
-    {"src": "i18n/**", "use": "@vercel/static"},
-    {"src": "partials/**", "use": "@vercel/static"},
-    {"src": "worker/**", "use": "@vercel/static"},
-    {"src": "recruiter/**", "use": "@vercel/static"}
+    {
+      "src": "server/index.js",
+      "use": "@vercel/node"
+    }
   ],
-  "routes": [
-    {"src": "/backend/(.*)", "dest": "/server/index.js"},
-    {"src": "/api/(.*)", "dest": "/server/index.js"},
-    {"src": "/worker/(.*)", "dest": "/server/index.js"},
-    {"src": "/recruiter/(.*)", "dest": "/server/index.js"},
-    {"src": "/(.*)", "dest": "/server/index.js"}
+  "rewrites": [
+    {
+      "source": "/backend/(.*)",
+      "destination": "/server/index.js"
+    },
+    {
+      "source": "/api/(.*)",
+      "destination": "/server/index.js"
+    },
+    {
+      "source": "/worker/(.*)",
+      "destination": "/server/index.js"
+    },
+    {
+      "source": "/recruiter/(.*)",
+      "destination": "/server/index.js"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/server/index.js"
+    }
   ],
   "headers": [
     {
@@ -37,11 +47,5 @@
         }
       ]
     }
-  ],
-  "env": {"NODE_ENV": "production"},
-  "functions": {
-    "server/index.js": {
-      "maxDuration": 10
-    }
-  }
+  ]
 }
