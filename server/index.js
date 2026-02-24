@@ -3,6 +3,7 @@ const express = require('express');
 const database = require('./database');
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
+const cors = require('cors');
 
 // Security utilities
 function sanitizeInput(input) {
@@ -16,14 +17,15 @@ const app = express();
 
 // Security middleware
 app.use(helmet({
-  contentSecurityPolicy: {
-    directives: {
-      defaultSrc: ["'self'"],
-      styleSrc: ["'self'", "'unsafe-inline'"],
-      scriptSrc: ["'self'"],
-      imgSrc: ["'self'", "data:", "https:"],
-    },
-  },
+  contentSecurityPolicy: false, // Disable CSP for now to fix API issues
+}));
+
+// CORS middleware
+app.use(cors({
+  origin: true, // Allow all origins for now
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 // Rate limiting
@@ -571,55 +573,6 @@ app.listen(PORT, HOST, () => {
   console.log('   GET  /backend/stats.php - Get statistics');
   console.log('   POST /backend/reset.php - Reset database');
   console.log('');
-});
-
-module.exports = app;
-
-app.post('/backend/auth_register.php', async (req, res) => {
-  try {
-    const name = String(req.body?.name || '').trim();
-    const email = String(req.body?.email || '').trim();
-    const password = String(req.body?.password || '');
-    const role = String(req.body?.role || 'jobseeker');
-    if (!name || !email || !password) {
-      return res.status(400).json({ ok: false, message: 'All fields are required' });
-    }
-    const hash = bcrypt.hashSync(password, 10);
-    const conn = await pool.getConnection();
-    try {
-      await conn.execute('INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)', [name, email, hash, role]);
-      res.json({ ok: true, message: 'Registered' });
-    } catch (e) {
-      if (e && e.code === 'ER_DUP_ENTRY') {
-        res.status(400).json({ ok: false, message: 'Email already exists' });
-      } else {
-        res.status(500).json({ ok: false, message: 'Registration failed' });
-      }
-    } finally {
-      conn.release();
-    }
-  } catch (e) {
-    res.status(500).json({ ok: false, message: 'Registration failed' });
-  }
-});
-
-app.post('/backend/auth_login.php', async (req, res) => {
-  try {
-    const email = String(req.body?.email || '').trim();
-    const password = String(req.body?.password || '');
-    const rows = await query('SELECT id, name, email, password, role FROM users WHERE email=? LIMIT 1', [email]);
-    if (rows.length === 0) return res.status(401).json({ ok: false, message: 'Invalid login' });
-    const user = rows[0];
-    const ok = bcrypt.compareSync(password, user.password);
-    if (!ok) return res.status(401).json({ ok: false, message: 'Invalid login' });
-    let role = user.role;
-    if (role === 'employer') role = 'recruiter';
-    if (role === 'jobseeker') role = 'worker';
-    const { password: _p, ...rest } = user;
-    res.json({ ok: true, user: { ...rest, role } });
-  } catch (e) {
-    res.status(500).json({ ok: false, message: 'Login failed' });
-  }
 });
 
 module.exports = app;
