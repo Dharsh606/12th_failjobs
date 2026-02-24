@@ -173,6 +173,19 @@
    - Open your browser
    - Navigate to: `http://localhost:3001`
 
+### 🚀 Vercel Deployment (Production)
+
+1. **Deploy to Vercel**
+   - Visit [vercel.com](https://vercel.com)
+   - Import your GitHub repository: `Dharsh606/12th_FailJobs`
+   - Click **Deploy** (no configuration needed)
+   - Your app will be live at: `https://12th-fail-jobs.vercel.app/`
+
+2. **Automatic Updates**
+   - Every push to GitHub triggers automatic deployment
+   - Zero downtime updates
+   - Global CDN distribution
+
 ### Manual Installation
 
 1. **Install dependencies**
@@ -205,7 +218,8 @@ The application uses a JSON-based database for simplicity:
 
 ## 🌐 Live Demo
 
-- **Live Site**: [12thfailjobs.gt.tc](https://12thfailjobs.gt.tc)
+- **Live Site**: [12th-fail-jobs.vercel.app](https://12th-fail-jobs.vercel.app/) ✨ **NEW!**
+- **Legacy Site**: [12thfailjobs.gt.tc](https://12thfailjobs.gt.tc)
 - **GitHub Repository**: [12th_FailJobs](https://github.com/Dharsh606/12th_FailJobs.git)
 
 ## 👥 Default Login Credentials
