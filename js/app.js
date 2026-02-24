@@ -4,7 +4,7 @@
 // If your folder name is different, change this one line only:
 const BASE = "";
 
-const API = (file) => `${BASE}/backend/${file}`;
+const API = (file) => `${BASE}/backend/${file.replace('.php', '')}`;
 
 // Security enhancements
 const SECURITY = {

@@ -4,6 +4,14 @@ const database = require('./database');
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
 
+// Security utilities
+function sanitizeInput(input) {
+  return String(input || '')
+    .replace(/[<>]/g, '')
+    .trim()
+    .substring(0, 500);
+}
+
 const app = express();
 
 // Security middleware
@@ -40,6 +48,102 @@ app.use((req, res, next) => {
 app.use(express.static(path.join(__dirname, '..')));
 
 // ===== AUTH ENDPOINTS =====
+
+// Clean API routes (without .php extension)
+app.post('/backend/auth_register', async (req, res) => {
+  try {
+    const { name, email, password, role, phone, education, skills, experience, company } = req.body;
+    
+    // Validate required fields
+    if (!name || !email || !password || !role) {
+      return res.status(400).json({ 
+        ok: false, 
+        message: 'Name, email, password, and role are required' 
+      });
+    }
+
+    // Check if user already exists
+    const existingUser = await database.findUserByEmail(email);
+    if (existingUser) {
+      return res.status(400).json({ 
+        ok: false, 
+        message: 'User with this email already exists' 
+      });
+    }
+
+    // Create new user
+    const newUser = await database.createUser({
+      name: sanitizeInput(name),
+      email: sanitizeInput(email),
+      password: password, // Will be hashed in database.js
+      role: sanitizeInput(role),
+      phone: phone ? sanitizeInput(phone) : '',
+      education: education ? sanitizeInput(education) : '',
+      skills: skills ? sanitizeInput(skills) : '',
+      experience: experience ? sanitizeInput(experience) : '',
+      company: company ? sanitizeInput(company) : ''
+    });
+    
+    res.json({ 
+      ok: true, 
+      message: 'User registered successfully',
+      user: newUser
+    });
+  } catch (error) {
+    console.error('Register error:', error);
+    res.status(500).json({ 
+      ok: false, 
+      message: 'Failed to register user' 
+    });
+  }
+});
+
+// Login user
+app.post('/backend/auth_login', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    
+    if (!email || !password) {
+      return res.status(400).json({ 
+        ok: false, 
+        message: 'Email and password are required' 
+      });
+    }
+
+    // Find user by email
+    const user = await database.findUserByEmail(sanitizeInput(email));
+    if (!user) {
+      return res.status(401).json({ 
+        ok: false, 
+        message: 'Invalid email or password' 
+      });
+    }
+
+    // Verify password
+    const isValidPassword = await database.verifyPassword(password, user.password);
+    if (!isValidPassword) {
+      return res.status(401).json({ 
+        ok: false, 
+        message: 'Invalid email or password' 
+      });
+    }
+
+    // Remove password from response
+    const { password: _, ...userWithoutPassword } = user;
+    
+    res.json({ 
+      ok: true, 
+      message: 'Login successful',
+      user: userWithoutPassword
+    });
+  } catch (error) {
+    console.error('Login error:', error);
+    res.status(500).json({ 
+      ok: false, 
+      message: 'Failed to login' 
+    });
+  }
+});
 
 // Register new user
 app.post('/backend/auth_register.php', async (req, res) => {
