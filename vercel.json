@@ -13,7 +13,13 @@
   ],
   "routes": [
     {"src": "/backend/(.*)", "dest": "/server/index.js"},
+    {"src": "/api/(.*)", "dest": "/server/index.js"},
     {"src": "/(.*)", "dest": "/server/index.js"}
   ],
-  "env": {"NODE_ENV": "production"}
+  "env": {"NODE_ENV": "production"},
+  "functions": {
+    "server/index.js": {
+      "maxDuration": 10
+    }
+  }
 }
