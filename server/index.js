@@ -147,108 +147,10 @@ app.post('/backend/auth_login', async (req, res) => {
   }
 });
 
-// Register new user
-app.post('/backend/auth_register.php', async (req, res) => {
-  try {
-    const { name, email, password, role, phone, education, skills, experience, company } = req.body;
-    
-    // Validate required fields
-    if (!name || !email || !password || !role) {
-      return res.status(400).json({ 
-        ok: false, 
-        message: 'Name, email, password, and role are required' 
-      });
-    }
-
-    // Check if user already exists
-    const existingUser = await database.findUserByEmail(email);
-    if (existingUser) {
-      return res.status(400).json({ 
-        ok: false, 
-        message: 'Email already registered' 
-      });
-    }
-
-    // Create new user
-    const userData = {
-      name,
-      email,
-      password,
-      role,
-      phone: phone || '',
-      education: education || '',
-      skills: skills || '',
-      experience: experience || '',
-      company: company || ''
-    };
-
-    const newUser = await database.createUser(userData);
-    
-    res.json({ 
-      ok: true, 
-      message: 'Registration successful',
-      user: {
-        id: newUser.id,
-        name: newUser.name,
-        email: newUser.email,
-        role: newUser.role
-      }
-    });
-  } catch (error) {
-    console.error('Registration error:', error);
-    res.status(500).json({ 
-      ok: false, 
-      message: 'Registration failed' 
-    });
-  }
-});
-
-// Login user
-app.post('/backend/auth_login.php', async (req, res) => {
-  try {
-    const { email, password } = req.body;
-    
-    if (!email || !password) {
-      return res.status(400).json({ 
-        ok: false, 
-        message: 'Email and password are required' 
-      });
-    }
-
-    const user = await database.validateUser(email, password);
-    
-    if (!user) {
-      return res.status(401).json({ 
-        ok: false, 
-        message: 'Invalid email or password' 
-      });
-    }
-
-    // Normalize role names
-    let normalizedRole = user.role;
-    if (normalizedRole === 'employer') normalizedRole = 'recruiter';
-    if (normalizedRole === 'jobseeker') normalizedRole = 'worker';
-
-    const { password: _, ...userWithoutPassword } = user;
-    
-    res.json({ 
-      ok: true, 
-      message: 'Login successful',
-      user: { ...userWithoutPassword, role: normalizedRole }
-    });
-  } catch (error) {
-    console.error('Login error:', error);
-    res.status(500).json({ 
-      ok: false, 
-      message: 'Login failed' 
-    });
-  }
-});
-
 // ===== JOB ENDPOINTS =====
 
 // Get all jobs with filters
-app.get('/backend/jobs_list.php', async (req, res) => {
+app.get('/backend/jobs_list', async (req, res) => {
   try {
     const { q, location, education, category, created_by } = req.query;
     
@@ -272,7 +174,7 @@ app.get('/backend/jobs_list.php', async (req, res) => {
 });
 
 // Get single job
-app.get('/backend/job_get.php', async (req, res) => {
+app.get('/backend/job_get', async (req, res) => {
   try {
     const { id } = req.query;
     
@@ -303,7 +205,7 @@ app.get('/backend/job_get.php', async (req, res) => {
 });
 
 // Create new job
-app.post('/backend/jobs_create.php', async (req, res) => {
+app.post('/backend/jobs_create', async (req, res) => {
   try {
     const { title, company, description, requirements, salary, location, education, job_type, category, posted_by } = req.body;
     
@@ -346,7 +248,7 @@ app.post('/backend/jobs_create.php', async (req, res) => {
 });
 
 // Update job status
-app.post('/backend/jobs_status.php', async (req, res) => {
+app.post('/backend/jobs_status', async (req, res) => {
   try {
     const { id, status } = req.body;
     
@@ -381,7 +283,7 @@ app.post('/backend/jobs_status.php', async (req, res) => {
 });
 
 // Delete job
-app.post('/backend/jobs_delete.php', async (req, res) => {
+app.post('/backend/jobs_delete', async (req, res) => {
   try {
     const { id } = req.body;
     
@@ -417,7 +319,7 @@ app.post('/backend/jobs_delete.php', async (req, res) => {
 // ===== APPLICATION ENDPOINTS =====
 
 // Create job application
-app.post('/backend/apply_create.php', async (req, res) => {
+app.post('/backend/apply_create', async (req, res) => {
   try {
     const { job_id, user_id, applicant_name, applicant_phone, applicant_email, message } = req.body;
     
@@ -464,7 +366,7 @@ app.post('/backend/apply_create.php', async (req, res) => {
 });
 
 // Get applications
-app.get('/backend/applications_list.php', async (req, res) => {
+app.get('/backend/applications_list', async (req, res) => {
   try {
     const { job_id, user_id } = req.query;
     
@@ -508,7 +410,7 @@ app.get('/backend/applications_list.php', async (req, res) => {
 // ===== UTILITY ENDPOINTS =====
 
 // Get database statistics
-app.get('/backend/stats.php', async (req, res) => {
+app.get('/backend/stats', async (req, res) => {
   try {
     const stats = database.getStats();
     res.json({ ok: true, stats });
@@ -522,7 +424,7 @@ app.get('/backend/stats.php', async (req, res) => {
 });
 
 // Reset database (for testing)
-app.post('/backend/reset.php', async (req, res) => {
+app.post('/backend/reset', async (req, res) => {
   try {
     database.reset();
     res.json({ 
@@ -561,17 +463,17 @@ app.listen(PORT, HOST, () => {
   console.log('   Worker: amit@example.com / password123');
   console.log('');
   console.log('🔧 Available Endpoints:');
-  console.log('   POST /backend/auth_register.php - Register user');
-  console.log('   POST /backend/auth_login.php - Login user');
-  console.log('   GET  /backend/jobs_list.php - Get jobs');
-  console.log('   GET  /backend/job_get.php - Get single job');
-  console.log('   POST /backend/jobs_create.php - Create job');
-  console.log('   POST /backend/jobs_status.php - Update job status');
-  console.log('   POST /backend/jobs_delete.php - Delete job');
-  console.log('   POST /backend/apply_create.php - Apply for job');
-  console.log('   GET  /backend/applications_list.php - Get applications');
-  console.log('   GET  /backend/stats.php - Get statistics');
-  console.log('   POST /backend/reset.php - Reset database');
+  console.log('   POST /backend/auth_register - Register user');
+  console.log('   POST /backend/auth_login - Login user');
+  console.log('   GET  /backend/jobs_list - Get jobs');
+  console.log('   GET  /backend/job_get - Get single job');
+  console.log('   POST /backend/jobs_create - Create job');
+  console.log('   POST /backend/jobs_status - Update job status');
+  console.log('   POST /backend/jobs_delete - Delete job');
+  console.log('   POST /backend/apply_create - Apply for job');
+  console.log('   GET  /backend/applications_list - Get applications');
+  console.log('   GET  /backend/stats - Get statistics');
+  console.log('   POST /backend/reset - Reset database');
   console.log('');
 });
 
