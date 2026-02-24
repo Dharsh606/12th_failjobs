@@ -14,7 +14,29 @@
   "routes": [
     {"src": "/backend/(.*)", "dest": "/server/index.js"},
     {"src": "/api/(.*)", "dest": "/server/index.js"},
+    {"src": "/worker/(.*)", "dest": "/server/index.js"},
+    {"src": "/recruiter/(.*)", "dest": "/server/index.js"},
     {"src": "/(.*)", "dest": "/server/index.js"}
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, no-store, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/(.*\\.(js|css))",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    }
   ],
   "env": {"NODE_ENV": "production"},
   "functions": {
