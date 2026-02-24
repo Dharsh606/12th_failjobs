@@ -87,7 +87,7 @@
   document.getElementById("loginForm").addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const data = await postJSON("auth_login.php", {
+    const data = await postJSON("auth_login", {
       email: document.getElementById("loginEmail").value.trim(),
       password: document.getElementById("loginPassword").value
     });
@@ -112,7 +112,7 @@
 
     if (pass !== confirm) return alert("Passwords do not match");
 
-    const data = await postJSON("auth_register.php", {
+    const data = await postJSON("auth_register", {
       name: document.getElementById("regName").value.trim(),
       email: document.getElementById("regEmail").value.trim(),
       password: pass,
