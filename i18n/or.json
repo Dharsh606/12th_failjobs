@@ -1,12 +1,1 @@
-{
-  "site_name": "12failjob.com",
-  "choose_language": "ଭାଷା ବାଛନ୍ତୁ",
-  "choose_role": "ଆପଣଙ୍କ ବିଭାଗ ବାଛନ୍ତୁ",
-  "i_am_worker": "ମୁଁ କାମ କରୁଥିବା ଲୋକ",
-  "i_am_recruiter": "ମୁଁ କାର୍ମିକ ନିଯୁକ୍ତ କରୁଛି",
-  "worker_sub": "ଆପଣଙ୍କ ନିକଟରେ କାମ ସହଜରେ ଖୋଜନ୍ତୁ",
-  "recruiter_sub": "ଭରସାଯୋଗ୍ୟ କାର୍ମିକ ଶୀଘ୍ର ନିଯୁକ୍ତ କରନ୍ତୁ",
-  "browse_jobs": "କାମ ଦେଖନ୍ତୁ",
-  "post_job": "କାମ ପୋଷ୍ଟ କରନ୍ତୁ",
-  "login": "ଲଗଇନ / ନୋଟିକରଣ"
-}
+{"site_name": "12ମ ଫେଲ ଚାକିରି", "choose_language": "ଭାଷା ବାଛନ୍ତୁ", "choose_role": "ଆପଣଙ୍କର ଭୂମିକା ବାଛନ୍ତୁ", "i_am_worker": "ମୁଁ ଚାକିରି ଖୋଜୁଛି", "i_am_recruiter": "ମୁଁ ନିଯୁକ୍ତିକର୍ତା", "worker_sub": "ସହଜରେ ଚାକିରି ଖୋଜନ୍ତୁ", "recruiter_sub": "ଭଲ କର୍ମଚାରୀଙ୍କୁ ଶୀଘ୍ର ନିଯୁକ୍ତ କରନ୍ତୁ", "browse_jobs": "ଚାକିରି ଦେଖନ୍ତୁ", "post_job": "ଚାକିରି ପୋଷ୍ଟ କରନ୍ତୁ", "login": "ଲଗଇନ / ରେଜିଷ୍ଟର", "back": "ପଛକୁ", "search_label": "ଖୋଜନ୍ତୁ", "search_ph": "ଚାକିରି ଖୋଜନ୍ତୁ (ସାହାଯକ, ଘରକାର୍ଯ୍ୟ...)", "location_label": "ସ୍ଥାନ", "location_ph": "ସହର (ଭୁବନେଶ୍ଵର...)", "education_label": "ଶିକ୍ଷା", "any": "ଯେଉଁଟା", "search_btn": "ଖୋଜନ୍ତୁ", "clear_btn": "ସଫା କରନ୍ତୁ", "apply_title": "ଆବେଦନ କରନ୍ତୁ (ଇଚ୍ଛାଧୀନ)", "apply_sub": "ଯଦି ଆପଣ ଅଧିକ ପଢ଼ିପାରିବେ ନାହଁନ୍ତି, କେବଳ ଉପରେ ଥିବା ବଟନ ବ୍ୟବହାର କରି ନିଯୁକ୍ତିକର୍ତାଙ୍କୁ କଲ କରନ୍ତୁ", "your_name": "ଆପଣଙ୍କର ନାମ", "your_phone": "ଫୋନ", "message": "ସନ୍ଦେଶ", "apply_btn": "ଆବେଦନ ଜମା କରନ୍ତୁ", "desc": "ବର୍ଣ୍ଣନା", "req": "ଆବଶ୍ୟକତା", "back_to_jobs": "ଚାକିରିକୁ ଫେରନ୍ତୁ", "auth_login": "ଲଗଇନ", "auth_register": "ରେଜିଷ୍ଟର", "auth_email": "ଇମେଲ", "auth_password": "ପାସୱାର୍ଡ", "auth_confirm_password": "ପାସୱାର୍ଡ ନିଶ୍ଚିତ କରନ୍ତୁ", "auth_name": "ନାମ", "auth_phone": "ଫୋନ", "auth_company": "କମ୍ପାନୀ", "auth_education": "ଶିକ୍ଷା", "auth_skills": "ଦକ୍ଷତା", "auth_experience": "ଅଭିଜ୍ଞାନ", "auth_login_btn": "ଲଗଇନ", "auth_register_btn": "ରେଜିଷ୍ଟର", "dashboard": "ଡ୍ୟାସବୋର୍ଡ", "my_applications": "ମୋର ଆବେଦନ", "my_profile": "ମୋର ପ୍ରୋଫାଇଲ", "logout": "ଲଗଆଉଟ", "welcome": "ସ୍ୱାଗତ", "job_title": "ଚାକିରି ଶୀର୍ଷକ", "job_category": "ବିଭାଗ", "job_salary": "ବେତନ", "job_apply_now": "ଏବେ ଆବେଦନ କରନ୍ତୁ", "job_call_now": "ଏବେ କଲ କରନ୍ତୁ", "error_required": "ଏହି କ୍ଷେତ୍ର ଆବଶ୍ୟକ", "error_email_invalid": "ଦୟାକରି ଏକ ବୈଧ ଇମେଲ ପ୍ରବେଶ କରନ୍ତୁ", "error_password_short": "ପାସୱାର୍ଡ ଅତିକମରେ 6 ଅକ୍ଷରର ହେବା ଉଚିତ", "error_password_mismatch": "ପାସୱାର୍ଡ ମେଳୁନାହିଁ", "success_saved": "ସଫଳତାର ସହିତ ସଂରକ୍ଷିତ ହେଲା!", "success_applied": "ଆବେଦନ ସଫଳତାର ସହିତ ଜମା ହେଲା!", "no_jobs_found": "କୌଣସି ଚାକିରି ମିଳିଲା ନାହିଁ", "loading": "ଲୋଡ ହେଉଛି...", "home": "ମୂଖ୍ୟ", "about": "ଆମ ବିଷୟରେ", "contact": "ଯୋଗାଯୋଗ", "full_time": "ପୂର୍ଣ ସମୟ", "part_time": "ଅଂଶ ସମୟ", "education_10th": "10ମ ପାସ", "education_12th": "12ମ ପାସ", "education_any": "ଯେଉଁ ଶିକ୍ଷା", "category_domestic": "ଘରୋଇ କାର୍ଯ୍ୟ", "category_driving": "ଡ୍ରାଇଭିଙ୍ଗ", "category_office": "କାର୍ଯ୍ୟାଳୟ କାର୍ଯ୍ୟ", "category_sales": "ବିକ୍ରୟ", "category_other": "ଅନ୍ୟାନ୍ୟ"}
