@@ -1303,7 +1303,6 @@ main {
   }
 }
 
-<<<<<<< HEAD
 /* ================= Footer Links ================= */
 .footer-link:hover {
   color: var(--primary-blue) !important;
@@ -1315,10 +1314,3 @@ main {
   outline: 2px solid var(--accent-orange);
   outline-offset: 2px;
 }
-=======
-
-
-
-
-
->>>>>>> 0c3d48b (updated project)

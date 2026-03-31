@@ -1,11 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<<<<<<< HEAD
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no" />
   <title>12thFailJobs</title>
   <link rel="stylesheet" href="styles-new.css" />
+
+  <!-- Language System -->
+  <script defer src="js/i18n.js"></script>
+
   <style>
     /* Override inline styles to use main CSS properly */
     .wrap { 
@@ -85,96 +88,60 @@
       color: var(--accent) !important;
       background: rgba(255, 140, 0, 0.1) !important;
     }
+
+    /* Language Dropdown */
+    .lang-box{
+      margin-top:20px;
+      display:flex;
+      justify-content:center;
+    }
+
+    .lang-box select{
+      padding:12px 22px;
+      border-radius:40px;
+      border:1px solid rgba(255,255,255,0.2);
+      background:rgba(255,255,255,0.15);
+      backdrop-filter:blur(15px);
+      color:#000;
+      font-weight:700;
+      cursor:pointer;
+    }
+
+    .lang-box select option{
+      background:#fff;
+      color:#000;
+    }
+
+    .section-title{
+      text-align:center;
+      margin:40px 0 30px;
+      font-size:2rem;
+    }
+
+    .role-cards{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+      gap:20px;
+    }
+
+    .role-card{
+      padding:20px;
+      border-radius:16px;
+      text-decoration:none;
+      background:var(--glass-bg);
+      backdrop-filter:blur(10px);
+      box-shadow:var(--glass-shadow);
+      color:var(--text);
+    }
+
+    .role-features{
+      margin-top:10px;
+      display:flex;
+      flex-direction:column;
+      gap:5px;
+    }
   </style>
-=======
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no"/>
-<title>12thFailJobs</title>
->>>>>>> 0c3d48b (updated project)
-
-<link rel="stylesheet" href="styles-new.css" />
-
-<!-- Language System -->
-<script defer src="js/i18n.js"></script>
-
-<style>
-.wrap{max-width:1200px;margin:0 auto;padding:20px}
-
-.hero{
-background:var(--glass-bg);
-backdrop-filter:blur(12px);
-border-radius:var(--radius);
-padding:60px 20px;
-text-align:center;
-}
-
-.hero h1{
-font-size:6.5rem;
-color:var(--primary);
-margin-bottom:15px;
-}
-
-.hero p{
-color:var(--text-muted);
-margin-bottom:20px;
-}
-
-/* Language Dropdown */
-.lang-box{
-margin-top:20px;
-display:flex;
-justify-content:center;
-}
-
-.lang-box select{
-padding:12px 22px;
-border-radius:40px;
-border:1px solid rgba(255,255,255,0.2);
-background:rgba(255,255,255,0.15);
-backdrop-filter:blur(15px);
-color:#000;
-font-weight:700;
-cursor:pointer;
-}
-
-.lang-box select option{
-background:#fff;
-color:#000;
-}
-
-.section-title{
-text-align:center;
-margin:40px 0 30px;
-font-size:2rem;
-}
-
-.role-cards{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
-gap:20px;
-}
-
-.role-card{
-padding:20px;
-border-radius:16px;
-text-decoration:none;
-background:var(--glass-bg);
-backdrop-filter:blur(10px);
-box-shadow:var(--glass-shadow);
-color:var(--text);
-}
-
-.role-features{
-margin-top:10px;
-display:flex;
-flex-direction:column;
-gap:5px;
-}
-</style>
 </head>
-
-<body>
-
 
 <body>
   <div class="floating-particles"></div>
@@ -182,17 +149,10 @@ gap:5px;
 
   <div class="wrap">
 
-<<<<<<< HEAD
     <section class="hero animate-fade-in-up">
       <div style="text-align: center;">
-        <h1 class="gradient-text" >12thFailJobs</h1>
-        <p >Empowering India's Real Workforce</p>
-=======
-    
-    <section class="hero">
-      <div>
-        <h1>12thFailJobs</h1>
-        <center><p data-i18n="hero_tagline">Empowering India's Real Workforce</p></center>
+        <h1 class="gradient-text">12thFailJobs</h1>
+        <p data-i18n="hero_tagline">Empowering India's Real Workforce</p>
 
         <!-- 🌍 Language Dropdown -->
         <div class="lang-box">
@@ -211,79 +171,61 @@ gap:5px;
             <option value="assamese">🇮🇳 অসমীয়া</option>
           </select>
         </div>
->>>>>>> 0c3d48b (updated project)
       </div>
     </section>
 
+    <div class="section-chooser">
+      <h2 class="section-title" data-i18n="choose_path">
+        Choose Your Path
+      </h2>
 
- <div class="section-chooser">
+      <div class="role-cards">
+        <a href="worker/login.html" class="role-card worker">
+          <span class="role-icon">👷</span>
+          <h3 class="role-title" data-i18n="worker_title">
+            I am a Worker
+          </h3>
+          <p class="role-description" data-i18n="worker_desc">
+            Find nearby jobs easily and start working today
+          </p>
+          <div class="role-features">
+            <span class="role-feature" data-i18n="feature_apply">
+              ⚡ Simple Apply
+            </span>
+            <span class="role-feature" data-i18n="feature_call">
+              📞 Direct Call
+            </span>
+            <span class="role-feature" data-i18n="feature_quick">
+              ⚡ Quick Jobs
+            </span>
+          </div>
+        </a>
 
-  <h2 class="section-title" data-i18n="choose_path">
-    Choose Your Path
-  </h2>
-
-  <div class="role-cards">
-
-    <a href="worker/login.html" class="role-card worker">
-      <span class="role-icon">👷</span>
-
-      <h3 class="role-title" data-i18n="worker_title">
-        I am a Worker
-      </h3>
-
-      <p class="role-description" data-i18n="worker_desc">
-        Find nearby jobs easily and start working today
-      </p>
-
-      <div class="role-features">
-        <span class="role-feature" data-i18n="feature_apply">
-          ⚡ Simple Apply
-        </span>
-
-        <span class="role-feature" data-i18n="feature_call">
-          📞 Direct Call
-        </span>
-
-        <span class="role-feature" data-i18n="feature_quick">
-          ⚡ Quick Jobs
-        </span>
+        <a href="recruiter/login.html" class="role-card recruiter">
+          <span class="role-icon">👔</span>
+          <h3 class="role-title" data-i18n="recruiter_title">
+            I am a Recruiter
+          </h3>
+          <p class="role-description" data-i18n="recruiter_desc">
+            Hire trusted workers fast and grow your business
+          </p>
+          <div class="role-features">
+            <span class="role-feature" data-i18n="feature_post">
+              📝 Post Jobs
+            </span>
+            <span class="role-feature" data-i18n="feature_manage">
+              👥 Manage Applications
+            </span>
+            <span class="role-feature" data-i18n="feature_hire">
+              🎯 Hire Smart
+            </span>
+          </div>
+        </a>
       </div>
-    </a>
-
-
-    <a href="recruiter/login.html" class="role-card recruiter">
-      <span class="role-icon">👔</span>
-
-      <h3 class="role-title" data-i18n="recruiter_title">
-        I am a Recruiter
-      </h3>
-
-      <p class="role-description" data-i18n="recruiter_desc">
-        Hire trusted workers fast and grow your business
-      </p>
-
-      <div class="role-features">
-
-        <span class="role-feature" data-i18n="feature_post">
-          📝 Post Jobs
-        </span>
-
-        <span class="role-feature" data-i18n="feature_manage">
-          👥 Manage Applications
-        </span>
-
-        <span class="role-feature" data-i18n="feature_hire">
-          🎯 Hire Smart
-        </span>
-
-      </div>
-    </a>
-
+    </div>
   </div>
-</div>
   <div data-include="footer"></div>
 
-  
   <script src="js/partials-unified.js"></script>
   <script>
     // Mobile Navigation Toggle
